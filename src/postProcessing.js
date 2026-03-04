@@ -11,8 +11,12 @@ export function postProcessing(scene,camera,renderer){
     const renderPass = new RenderPass(scene,camera)
     composer.addPass(renderPass)
 
+    const afterPass = new AfterimagePass()
+    afterPass.damp = .6
+    composer.addPass(afterPass)
+
     const bloomPass = new UnrealBloomPass()
-    bloomPass.strength = 0.4
+    bloomPass.strength = 0.5
     composer.addPass(bloomPass)
 
     return composer

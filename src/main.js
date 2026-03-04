@@ -29,6 +29,8 @@ const particles = {};
 const lights = {};
 const flowers = {};
 
+const clock = new THREE.Clock()
+
 init();
 
 function init(){
@@ -179,6 +181,24 @@ function animate(){
   }
 
   requestAnimationFrame(animate);
+  
+  const t= clock.getElapsedTime()
+  const {count,positions,baseX,baseZ,sineAmp,sineFreq,positionAttr} = 
+    particles.points.userData
 
+  const floatDownSpeed = 0.1
+  const respawnY = 5
+
+  for (let i=0; i<count; i++){
+    const i3 = i*3
+    positions[i3] = baseX[i] + sineAmp[i] * Math.sin(t*sineFreq[i])
+    positions[i3+2] = baseZ[i]+sineAmp[i]* Math.cos(t*sineFreq[i])
+
+    if(positions[i3+1]<-5){
+      positions[i3+1] = respawnY
+    }
+  }
+  positionAttr.needsUpdate = true;
+  // controls.update();
   composer.render();
 }
