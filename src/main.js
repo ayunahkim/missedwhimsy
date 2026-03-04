@@ -193,7 +193,7 @@ function animate(){
     const i3 = i*3
     positions[i3] = baseX[i] + sineAmp[i] * Math.sin(t*sineFreq[i])
     positions[i3+2] = baseZ[i]+sineAmp[i]* Math.cos(t*sineFreq[i])
-
+    positions[i3+1] -= floatDownSpeed*0.013
     if(positions[i3+1]<-5){
       positions[i3+1] = respawnY
     }
