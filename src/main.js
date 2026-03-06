@@ -30,7 +30,7 @@ const interactionManager = new InteractionManager(
 
 const meshes = {};
 const particles = {};
-const flowers = {};
+const flowers = [];
 const lights = {};
 
 const mixers = [];
@@ -56,6 +56,9 @@ function init(){
   resize();
   animate();
   instances();
+
+  console.log(flowers)
+  console.log(flowers[0])
 }
 
 function instances(){
@@ -87,7 +90,7 @@ function instances(){
     })
     temp.init()
   }
-  console.log(mixers)
+  // console.log(mixers)
 }
 
 function resize(){
@@ -100,11 +103,15 @@ function resize(){
 
 function animate(){
   interactionManager.update();
+  // console.log(flowers)
 
-  if(Object.keys(flowers).length==20 && modelFlag==false){
+  if(flowers.length==20 && modelFlag==false){
     modelFlag = true
-    for(let i = 0; i<Object.keys(flowers).length;i++){
-      // console.log(Object.keys(flowers)[i])
+    for(let i = 0; i<flowers.length;i++){
+      console.log(flowers[i]);
+      // temp.addEventListener('click',(event)=>{
+      //   console.log("test")
+      // })
     }
   }
 
