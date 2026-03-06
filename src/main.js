@@ -7,11 +7,15 @@ import gsap from 'gsap'
 import { InteractionManager } from 'three.interactive';
 import { addParticles } from './addParticles';
 import { postProcessing } from './postProcessing';
+import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
 const scene = new THREE.Scene();
 // (FOV, aspect ratio, near, far)
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+const controls = new OrbitControls(camera,renderer.domElement)
+controls.enableDamping = true;
 
 let composer;
 let modelFlag = false;
@@ -26,8 +30,10 @@ const interactionManager = new InteractionManager(
 
 const meshes = {};
 const particles = {};
-const lights = {};
 const flowers = {};
+const lights = {};
+
+const mixers = [];
 
 const clock = new THREE.Clock()
 
@@ -50,40 +56,6 @@ function init(){
   resize();
   animate();
   instances();
-  cameraMove();
-}
-
-function cameraMove(){
-  window.addEventListener('click',()=>{
-    if(counter%2==0){
-        gsap.to(camera.position,{
-          x:-.2,
-          y:.4,
-          z:2.5,
-          duration:.8,
-          ease:'power1.inOut'
-        })
-        gsap.to(camera.rotation,{
-          x:-.6,
-          duration:.8,
-          ease:'power1.inOut'
-        })
-      } else {
-        gsap.to(camera.position,{
-          x:0,
-          y:0,
-          z:5,
-          duration:.8,
-          ease:'power1.inOut'
-        })
-        gsap.to(camera.rotation,{
-          x:0,
-          duration:.8,
-          ease:'power1.inOut'
-        })
-      }
-    counter++;
-  })
 }
 
 function instances(){
@@ -95,32 +67,27 @@ function instances(){
     scale: new THREE.Vector3(.008,.008,.008),
     position: new THREE.Vector3(.2,-0.8,1.5),
     rotation: new THREE.Vector3(0,-0.87,0)
-    // replace:true,
-    // replaceURL:'./assets/mat.png',
   })
   desk.init()
 
-  const flower1 = new Model({
-    url:'./assets/flower1.glb',
-    scene: scene,
-    meshes: meshes,
-    name: 'flower1',
-    scale: new THREE.Vector3(.1,.1,.1),
-    position: new THREE.Vector3(-3,-2,0),
-    animations:true,
-  })
-  // flower1.init()
+  for(let i=0;i<20;i++){
+    let xpos = (Math.random()-0.5)*2
+    let ypos = (Math.random()-0.8)
+    let zpos = (Math.random()+1.2)
 
-  const flower2 = new Model({
-    url:'./assets/flower2.glb',
-    scene:scene,
-    meshes:meshes,
-    name:'flower2',
-    scale: new THREE.Vector3(1.2,1.2,1.2),
-    position: new THREE.Vector3(.15,-.2,2.2),
-    animations:true
-  })
-  flower2.init()
+    let temp = new Model({
+      url:'./assets/flower2.glb',
+      scene:scene,
+      meshes:flowers,
+      name:'flower'+String([i]),
+      scale: new THREE.Vector3(1.2,1.2,1.2),
+      position: new THREE.Vector3(xpos,ypos,zpos),
+      animationState:true,
+      mixers:mixers,
+    })
+    temp.init()
+  }
+  console.log(mixers)
 }
 
 function resize(){
@@ -134,50 +101,16 @@ function resize(){
 function animate(){
   interactionManager.update();
 
-  // if(meshes.desk && modelFlag==false){
-  //   modelFlag = true;
-  //   meshes.desk.addEventListener('click',(event)=>{
-  //     if(counter==0){
-  //       gsap.to(camera.position,{
-  //         x:-.2,
-  //         y:.4,
-  //         z:2.5,
-  //         duration:.8,
-  //         ease:'power1.inOut'
-  //       })
-  //       gsap.to(camera.rotation,{
-  //         x:-.6,
-  //         duration:.8,
-  //         ease:'power1.inOut'
-  //       })
-  //     } else {
-  //       gsap.to(camera.position,{
-  //         x:0,
-  //         y:0,
-  //         z:5,
-  //         duration:.8,
-  //         ease:'power1.inOut'
-  //       })
-  //       gsap.to(camera.rotation,{
-  //         x:0,
-  //         duration:.8,
-  //         ease:'power1.inOut'
-  //       })
-  //     }
-  //   })
-  //   interactionManager.add(meshes.desk);
-  // }
+  if(Object.keys(flowers).length==20 && modelFlag==false){
+    modelFlag = true
+    for(let i = 0; i<Object.keys(flowers).length;i++){
+      // console.log(Object.keys(flowers)[i])
+    }
+  }
 
-  if(meshes.flower2 && modelFlag==false){
-    modelFlag = true;
-    meshes.flower2.addEventListener('mouseover',(event)=>{
-      gsap.to(meshes.flower2.rotation,{
-        y:meshes.flower2.rotation.y + Math.PI * 2,
-        duration:2,
-        ease:'power1.inOut',
-      })
-    })
-    interactionManager.add(meshes.flower2)
+  const delta = clock.getDelta()
+  for(const mixer of mixers){
+    mixer.update(delta)
   }
 
   requestAnimationFrame(animate);
@@ -199,6 +132,6 @@ function animate(){
     }
   }
   positionAttr.needsUpdate = true;
-  // controls.update();
+  controls.update();
   composer.render();
 }
