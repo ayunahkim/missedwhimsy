@@ -14,8 +14,8 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 
-const controls = new OrbitControls(camera,renderer.domElement)
-controls.enableDamping = true;
+// const controls = new OrbitControls(camera,renderer.domElement)
+// controls.enableDamping = true;
 
 let composer;
 let modelFlag = false;
@@ -56,9 +56,8 @@ function init(){
   resize();
   animate();
   instances();
-
-  console.log(flowers)
-  console.log(flowers[0])
+  // console.log(flowers)
+  // console.log(flowers[0])
 }
 
 function instances(){
@@ -90,6 +89,18 @@ function instances(){
     })
     temp.init()
   }
+
+  let testflower = new Model({
+    url:'./assets/flower2.glb',
+    scene:scene,
+    meshes:meshes,
+    name:'testflower',
+    scale: new THREE.Vector3(2,2,2),
+    position: new THREE.Vector3(.15,-.2,2.2),
+    animationState:true,
+    mixers:mixers
+  })
+  testflower.init()
   // console.log(mixers)
 }
 
@@ -101,18 +112,38 @@ function resize(){
   })
 }
 
+function dissipate(obj){
+  obj.traverse((obj)=>{
+    // obj.material = new THREE.MeshStandardMaterial({ color: 0xff00ff });
+    gsap.from(obj.material,{
+      trasparent:true,
+      opacity:0,
+      duration:1,
+      ease:'power1'
+    })
+  })
+}
+
 function animate(){
   interactionManager.update();
   // console.log(flowers)
-
-  if(flowers.length==20 && modelFlag==false){
-    modelFlag = true
+  if(flowers.length==20){
     for(let i = 0; i<flowers.length;i++){
       console.log(flowers[i]);
-      // temp.addEventListener('click',(event)=>{
-      //   console.log("test")
-      // })
+      flowers[i].addEventListener('click',(event)=>{
+        console.log("test")
+      })
+      interactionManager.add(flowers[i])
     }
+  }
+  
+  if(meshes.testflower && modelFlag==false){
+    modelFlag = true
+    meshes.testflower.addEventListener('click',(event)=>{
+      dissipate(meshes.testflower)
+      console.log("i ran")
+    })
+    interactionManager.add(meshes.testflower)
   }
 
   const delta = clock.getDelta()
@@ -139,6 +170,6 @@ function animate(){
     }
   }
   positionAttr.needsUpdate = true;
-  controls.update();
+  // controls.update();
   composer.render();
 }
