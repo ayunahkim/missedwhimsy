@@ -86,7 +86,12 @@ export default class Model {
 			}
 
 			//we're taking the values we passed in and setting the values of our 3d model to said parameters, aka setting the positions, rotations and scale, and also adding the 3dmodel (gltf.scene) to our meshes object
-			this.meshes[`${this.name}`] = gltf.scene
+			if(Array.isArray(this.meshes)){
+				this.meshes.push(gltf.scene)
+				// this.meshes.push({name: this.name, mesh:gltf.scene})
+			} else{
+				this.meshes[`${this.name}`] = gltf.scene
+			}
 			this.meshes[`${this.name}`].position.set(
 				this.position.x,
 				this.position.y,

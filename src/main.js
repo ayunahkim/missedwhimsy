@@ -10,17 +10,22 @@ import { postProcessing } from './postProcessing';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
 const scene = new THREE.Scene();
+
 // (FOV, aspect ratio, near, far)
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 
-// const controls = new OrbitControls(camera,renderer.domElement)
-// controls.enableDamping = true;
+// orbit control stuff
+const controls = new OrbitControls(camera,renderer.domElement)
+controls.enableDamping = true;
+controls.enablePan = false;
+controls.minDistance=3
+controls.maxDistance=6
+controls.minPolarAngle=Math.PI/2
+controls.maxPolarAngle=Math.PI/2
 
 let composer;
 let modelFlag = false;
-
-let counter = 0;
 
 const interactionManager = new InteractionManager(
   renderer,
@@ -36,6 +41,8 @@ const lights = {};
 const mixers = [];
 
 const clock = new THREE.Clock()
+
+let ran = false;
 
 init();
 
@@ -56,8 +63,6 @@ function init(){
   resize();
   animate();
   instances();
-  // console.log(flowers)
-  // console.log(flowers[0])
 }
 
 function instances(){
@@ -80,7 +85,7 @@ function instances(){
     let temp = new Model({
       url:'./assets/flower2.glb',
       scene:scene,
-      meshes:flowers,
+      meshes:meshes,
       name:'flower'+String([i]),
       scale: new THREE.Vector3(1.2,1.2,1.2),
       position: new THREE.Vector3(xpos,ypos,zpos),
@@ -113,6 +118,15 @@ function resize(){
 }
 
 function dissipate(obj){
+  let temp = obj.getObjectsByProperty('name',"Object_33")
+  // console.log(temp[0])
+
+  gsap.from(temp[0].material,{
+    color:0xff00ff,
+    duration:1,
+    ease:'power1'
+  })
+
   obj.traverse((obj)=>{
     // obj.material = new THREE.MeshStandardMaterial({ color: 0xff00ff });
     gsap.from(obj.material,{
@@ -127,7 +141,14 @@ function dissipate(obj){
 function animate(){
   interactionManager.update();
   // console.log(flowers)
-  if(flowers.length==20){
+
+  // for(let i=0;i<meshes.length;i++){
+  //   let aggh = meshes.getObjectsByProperty('name','flower'+String([1]))
+  //   console.log(aggh)
+  // }
+  
+
+  if(flowers.length==20 && ran==false){
     for(let i = 0; i<flowers.length;i++){
       console.log(flowers[i]);
       flowers[i].addEventListener('click',(event)=>{
@@ -135,6 +156,8 @@ function animate(){
       })
       interactionManager.add(flowers[i])
     }
+    ran = true;
+    // console.log(flowers)
   }
   
   if(meshes.testflower && modelFlag==false){
@@ -142,6 +165,8 @@ function animate(){
     meshes.testflower.addEventListener('click',(event)=>{
       dissipate(meshes.testflower)
       console.log("i ran")
+      console.log(meshes)
+      
     })
     interactionManager.add(meshes.testflower)
   }
@@ -170,6 +195,7 @@ function animate(){
     }
   }
   positionAttr.needsUpdate = true;
-  // controls.update();
+
+  controls.update();
   composer.render();
 }
