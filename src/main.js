@@ -1,6 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
-import {addDefaultMeshes, addStandardMeshes} from './addDefaultMeshes'
+import {addDefaultMeshes, addStandardMeshes, interactPoints} from './addDefaultMeshes'
 import { addLight } from './addLight';
 import Model from './model'
 import gsap from 'gsap'
@@ -18,11 +18,10 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 // orbit control stuff
 const controls = new OrbitControls(camera,renderer.domElement)
 controls.enableDamping = true;
-controls.enablePan = false;
 controls.minDistance=3
 controls.maxDistance=6
-controls.minPolarAngle=Math.PI/2
-controls.maxPolarAngle=Math.PI/2
+// controls.minPolarAngle=Math.PI/2
+// controls.maxPolarAngle=Math.PI/2
 
 let composer;
 let modelFlag = false;
@@ -44,6 +43,8 @@ const clock = new THREE.Clock()
 
 let ran = false;
 
+let pt1 = false;
+
 init();
 
 function init(){
@@ -52,6 +53,11 @@ function init(){
   document.body.appendChild(renderer.domElement);
   camera.position.z = 5;
   composer = postProcessing(scene,camera,renderer)
+
+  meshes.point1 = interactPoints();
+  meshes.point1.position.z = 2;
+  meshes.point1.position.y = -.1
+  scene.add(meshes.point1)
   
   //here we populate our meshes container
   particles.points = addParticles();
@@ -63,6 +69,72 @@ function init(){
   resize();
   animate();
   instances();
+  points();
+  // cameraMovement();
+}
+
+function points(){
+  meshes.point1.addEventListener('click',()=>{
+    console.log('clickedddd')
+    pt1 = true;
+    gsap.to(meshes.point1.material,{
+      color:'#FC03FF',
+      duration:.2,
+      ease:'back.in'
+    })
+    msg();
+  })
+  interactionManager.add(meshes.point1)
+}
+
+function msg(){
+  if(pt1){
+    let element = document.getElementById('box1')
+    gsap.to(element,{
+      visibility:'visible'
+    })
+    window.addEventListener('click',()=>{
+      if(element.style.visibility=='visible'){
+        gsap.to(element,{
+          visibility:'hidden'
+        })
+        pt1 = false
+      }
+    })
+  }
+}
+
+function cameraMovement(){
+  window.addEventListener('click',()=>{
+    // if zoomed out
+    if(camera.position.z==5){
+      gsap.to(camera.position,{
+        x:-.2,
+        y:.4,
+        z:2.5,
+        duration:.8,
+        ease:'power1.inOut'
+      })
+      gsap.to(camera.rotation,{
+        x:-.6,
+        duration:.8,
+        ease:'power1.inOut'
+      })
+    } else {
+      gsap.to(camera.position,{
+        x:0,
+        y:0,
+        z:5,
+        duration:.8,
+        ease:'power1.inOut'
+      })
+      gsap.to(camera.rotation,{
+        x:0,
+        duration:.8,
+        ease:'power1.inOut'
+      })
+    }
+  })
 }
 
 function instances(){
@@ -92,7 +164,7 @@ function instances(){
       animationState:true,
       mixers:mixers,
     })
-    temp.init()
+    // temp.init()
   }
 
   let testflower = new Model({
@@ -150,7 +222,7 @@ function animate(){
 
   if(flowers.length==20 && ran==false){
     for(let i = 0; i<flowers.length;i++){
-      console.log(flowers[i]);
+      // console.log(flowers[i]);
       flowers[i].addEventListener('click',(event)=>{
         console.log("test")
       })
@@ -165,7 +237,7 @@ function animate(){
     meshes.testflower.addEventListener('click',(event)=>{
       dissipate(meshes.testflower)
       console.log("i ran")
-      console.log(meshes)
+      // console.log(meshes)
       
     })
     interactionManager.add(meshes.testflower)

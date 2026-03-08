@@ -15,3 +15,14 @@ export function addStandardMeshes(){
     const mesh = new THREE.Mesh(geometry,material);
     return mesh;
 }
+
+export function interactPoints(){
+    const geometry = new THREE.SphereGeometry(.02,16,16);
+    const material = new THREE.MeshBasicMaterial({color:0x0000ff});
+    const mesh = new THREE.Mesh(geometry,material);
+    return mesh;
+}
+
+// export function addtextBox(){
+//     const geometry = new THREE.PlaneGeometry(4,1)
+// }
