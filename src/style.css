@@ -1,7 +1,7 @@
 .box {
   position:absolute;
   top:40vh;
-  padding:10% 20%;
+  padding:5% 20%;
   display:flex;
   z-index:2;
   visibility:hidden;

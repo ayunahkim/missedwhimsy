@@ -16,10 +16,10 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 
 // orbit control stuff
-const controls = new OrbitControls(camera,renderer.domElement)
-controls.enableDamping = true;
-controls.minDistance=3
-controls.maxDistance=6
+// const controls = new OrbitControls(camera,renderer.domElement)
+// controls.enableDamping = true;
+// controls.minDistance=3
+// controls.maxDistance=6
 // controls.minPolarAngle=Math.PI/2
 // controls.maxPolarAngle=Math.PI/2
 
@@ -45,6 +45,7 @@ let ran = false;
 
 let pt1 = false;
 let pt2 = false;
+let fl1 = false;
 
 init();
 
@@ -77,7 +78,7 @@ function init(){
   animate();
   instances();
   points();
-  // cameraMovement();
+  cameraMovement();
 }
 
 function points(){
@@ -137,7 +138,7 @@ function msg(){
 function cameraMovement(){
   window.addEventListener('click',()=>{
     // if zoomed out
-    if(camera.position.z==5){
+    if(camera.position.z==5&&pt1==false&&pt2==false&&fl1==false){
       gsap.to(camera.position,{
         x:-.2,
         y:.4,
@@ -150,7 +151,7 @@ function cameraMovement(){
         duration:.8,
         ease:'power1.inOut'
       })
-    } else {
+    } else if(camera.position.z==2.5&&pt1==false&&pt2==false&&fl1==false){
       gsap.to(camera.position,{
         x:0,
         y:0,
@@ -264,6 +265,7 @@ function animate(){
   if(meshes.testflower && modelFlag==false){
     modelFlag = true
     meshes.testflower.addEventListener('click',(event)=>{
+      fl1=true;
       gsap.to(meshes.testflower,{
         visible:false,
         duration:2,
@@ -278,6 +280,7 @@ function animate(){
         gsap.to(element,{
           visibility:'hidden'
         })
+        fl1=false;
       }
      })
     })
@@ -309,6 +312,6 @@ function animate(){
   }
   positionAttr.needsUpdate = true;
 
-  controls.update();
+  // controls.update();
   composer.render();
 }
