@@ -266,6 +266,11 @@ function animate(){
     modelFlag = true
     meshes.testflower.addEventListener('click',(event)=>{
       fl1=true;
+      gsap.to(meshes.testflower.rotation,{
+        y:meshes.testflower.rotation.y + Math.PI * 2,
+        duration:2,
+        ease:'power1.inOut'
+      })
       gsap.to(meshes.testflower,{
         visible:false,
         duration:2,
