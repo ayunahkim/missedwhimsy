@@ -44,6 +44,7 @@ const clock = new THREE.Clock()
 let ran = false;
 
 let pt1 = false;
+let pt2 = false;
 
 init();
 
@@ -58,6 +59,12 @@ function init(){
   meshes.point1.position.z = 2;
   meshes.point1.position.y = -.1
   scene.add(meshes.point1)
+
+  meshes.point2 = interactPoints();
+  meshes.point2.position.z = 1.5;
+  meshes.point2.position.x = -.5;
+  meshes.point2.position.y = -.18
+  scene.add(meshes.point2)
   
   //here we populate our meshes container
   particles.points = addParticles();
@@ -77,14 +84,21 @@ function points(){
   meshes.point1.addEventListener('click',()=>{
     console.log('clickedddd')
     pt1 = true;
-    gsap.to(meshes.point1.material,{
-      color:'#FC03FF',
-      duration:.2,
-      ease:'back.in'
-    })
+    // gsap.to(meshes.point1.material,{
+    //   color:'#FC03FF',
+    //   duration:.2,
+    //   ease:'back.in'
+    // })
     msg();
   })
   interactionManager.add(meshes.point1)
+
+  meshes.point2.addEventListener('click',()=>{
+    console.log('pt 2')
+    pt2 = true;
+    msg();
+  })
+  interactionManager.add(meshes.point2)
 }
 
 function msg(){
@@ -99,6 +113,22 @@ function msg(){
           visibility:'hidden'
         })
         pt1 = false
+
+        // meshes.point1.visible = false;
+      }
+    })
+  } else if(pt2){
+    let element = document.getElementById('box2')
+    gsap.to(element,{
+      visibility:'visible'
+    })
+
+    window.addEventListener('click',()=>{
+      if(element.style.visibility=='visible'){
+        gsap.to(element,{
+          visibility:'hidden'
+        })
+        pt2 = false
       }
     })
   }
@@ -174,7 +204,7 @@ function instances(){
     name:'testflower',
     scale: new THREE.Vector3(2,2,2),
     position: new THREE.Vector3(.15,-.2,2.2),
-    animationState:true,
+    // animationState:true,
     mixers:mixers
   })
   testflower.init()
@@ -201,11 +231,10 @@ function dissipate(obj){
 
   obj.traverse((obj)=>{
     // obj.material = new THREE.MeshStandardMaterial({ color: 0xff00ff });
-    gsap.from(obj.material,{
-      trasparent:true,
-      opacity:0,
+    gsap.to(obj,{
+      visible:false,
       duration:1,
-      ease:'power1'
+      ease:'back'
     })
   })
 }
@@ -235,10 +264,22 @@ function animate(){
   if(meshes.testflower && modelFlag==false){
     modelFlag = true
     meshes.testflower.addEventListener('click',(event)=>{
-      dissipate(meshes.testflower)
-      console.log("i ran")
-      // console.log(meshes)
-      
+      gsap.to(meshes.testflower,{
+        visible:false,
+        duration:2,
+        ease:'power1'
+      })
+      let element = document.getElementById('flowerbox1')
+      gsap.to(element,{
+      visibility:'visible'
+    })
+    window.addEventListener('click',()=>{
+      if(element.style.visibility=='visible'){
+        gsap.to(element,{
+          visibility:'hidden'
+        })
+      }
+     })
     })
     interactionManager.add(meshes.testflower)
   }
