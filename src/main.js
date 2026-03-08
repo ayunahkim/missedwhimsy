@@ -170,7 +170,7 @@ function cameraMovement(){
 
 function instances(){
   const desk = new Model({
-    url:'./assets/desk.glb',
+    url:'./desk.glb',
     scene: scene,
     meshes: meshes,
     name:'desk',
@@ -186,7 +186,7 @@ function instances(){
     let zpos = (Math.random()+1.2)
 
     let temp = new Model({
-      url:'./assets/flower2.glb',
+      url:'./flower2.glb',
       scene:scene,
       meshes:meshes,
       name:'flower'+String([i]),
@@ -199,7 +199,7 @@ function instances(){
   }
 
   let testflower = new Model({
-    url:'./assets/flower2.glb',
+    url:'./flower2.glb',
     scene:scene,
     meshes:meshes,
     name:'testflower',

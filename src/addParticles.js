@@ -28,7 +28,7 @@ export function addParticles(){
     geometry.setAttribute('position', positionAttr)
 
     const tLoader = new THREE.TextureLoader()
-    const particlesTexture = tLoader.load('./assets/10.png')
+    const particlesTexture = tLoader.load('./10.png')
     particlesTexture.colorSpace = THREE.SRGBColorSpace
 
     const material = new THREE.PointsMaterial({
