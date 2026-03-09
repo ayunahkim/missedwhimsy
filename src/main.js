@@ -46,6 +46,7 @@ let ran = false;
 let pt1 = false;
 let pt2 = false;
 let fl1 = false;
+let fl2 = false;
 
 init();
 
@@ -61,11 +62,11 @@ function init(){
   meshes.point1.position.y = -.1
   scene.add(meshes.point1)
 
-  meshes.point2 = interactPoints();
-  meshes.point2.position.z = 1.5;
-  meshes.point2.position.x = -.5;
-  meshes.point2.position.y = -.18
-  scene.add(meshes.point2)
+  // meshes.point2 = interactPoints();
+  // meshes.point2.position.z = 1.5;
+  // meshes.point2.position.x = -.5;
+  // meshes.point2.position.y = -.18
+  // scene.add(meshes.point2)
   
   //here we populate our meshes container
   particles.points = addParticles();
@@ -89,12 +90,12 @@ function points(){
   })
   interactionManager.add(meshes.point1)
 
-  meshes.point2.addEventListener('click',()=>{
-    pt2 = true;
-    console.log('pt 2')
-    msg();
-  })
-  interactionManager.add(meshes.point2)
+  // meshes.point2.addEventListener('click',()=>{
+  //   pt2 = true;
+  //   console.log('pt 2')
+  //   msg();
+  // })
+  // interactionManager.add(meshes.point2)
 }
 
 function msg(){
@@ -131,7 +132,7 @@ function msg(){
 function cameraMovement(){
   window.addEventListener('click',()=>{
     // if zoomed out
-    if(camera.position.z==5&&pt1==false&&pt2==false&&fl1==false){
+    if(camera.position.z==5&&pt1==false&&pt2==false&&fl1==false&&fl2==false){
       gsap.to(camera.position,{
         x:-.2,
         y:.4,
@@ -144,7 +145,7 @@ function cameraMovement(){
         duration:.8,
         ease:'power1.inOut'
       })
-    } else if(camera.position.z==2.5&&pt1==false&&pt2==false&&fl1==false){
+    } else if(camera.position.z==2.5&&pt1==false&&pt2==false&&fl1==false&&fl2==false){
         gsap.to(camera.position,{
           x:0,
           y:0,
@@ -203,6 +204,15 @@ function instances(){
   })
   flower1.init()
 
+  let flower2 = new Model({
+    url:'./flower2.glb',
+    scene:scene,
+    meshes:meshes,
+    name:'flower2',
+    scale: new THREE.Vector3(1.4,1.4,1.4),
+    position: new THREE.Vector3(-.2,-.18,1.8)
+  })
+  flower2.init()
 }
 
 function resize(){
@@ -240,8 +250,6 @@ function dissipate(obj){
 }
 
 function animate(){
-  interactionManager.update();
-  
   if(meshes.flower1 && modelFlag==false){
     modelFlag = true
     meshes.flower1.addEventListener('click',(event)=>{
@@ -266,6 +274,32 @@ function animate(){
      })
     })
     interactionManager.add(meshes.flower1)
+  }
+
+  if(meshes.flower2){
+    meshes.flower2.addEventListener('click',()=>{
+      console.log("please")
+      fl2 = true;
+      gsap.to(meshes.flower2.rotation,{
+        y:meshes.flower2.rotation.y + Math.PI * 2,
+        duration:3,
+        ease:'power1.inOut'
+      })
+      let element = document.getElementById('flowerbox2')
+      gsap.to(element,{
+        opacity:100
+      })
+      window.addEventListener('click',()=>{
+        if(element.style.opacity==100){
+          gsap.to(element,{
+            opacity:0,
+          })
+          fl2 = false;
+          dissipate(meshes.flower2);
+        }
+      })
+    })
+    interactionManager.add(meshes.flower2)
   }
 
   const delta = clock.getDelta()
@@ -294,5 +328,6 @@ function animate(){
   positionAttr.needsUpdate = true;
 
   // controls.update();
+  interactionManager.update();
   composer.render();
 }
