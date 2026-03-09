@@ -90,8 +90,8 @@ function points(){
   interactionManager.add(meshes.point1)
 
   meshes.point2.addEventListener('click',()=>{
-    console.log('pt 2')
     pt2 = true;
+    console.log('pt 2')
     msg();
   })
   interactionManager.add(meshes.point2)
