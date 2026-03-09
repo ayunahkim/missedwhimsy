@@ -83,13 +83,8 @@ function init(){
 
 function points(){
   meshes.point1.addEventListener('click',()=>{
-    console.log('clickedddd')
     pt1 = true;
-    // gsap.to(meshes.point1.material,{
-    //   color:'#FC03FF',
-    //   duration:.2,
-    //   ease:'back.in'
-    // })
+    console.log('clickedddd')
     msg();
   })
   interactionManager.add(meshes.point1)
@@ -106,28 +101,26 @@ function msg(){
   if(pt1){
     let element = document.getElementById('box1')
     gsap.to(element,{
-      visibility:'visible'
+      opacity:100,
     })
     window.addEventListener('click',()=>{
-      if(element.style.visibility=='visible'){
+      if(element.style.opacity=='100'){
         gsap.to(element,{
-          visibility:'hidden'
+          opacity:0,
         })
         pt1 = false
-
-        // meshes.point1.visible = false;
       }
     })
   } else if(pt2){
     let element = document.getElementById('box2')
     gsap.to(element,{
-      visibility:'visible'
+      opacity:100,
     })
 
     window.addEventListener('click',()=>{
-      if(element.style.visibility=='visible'){
+      if(element.style.opacity==100){
         gsap.to(element,{
-          visibility:'hidden'
+          opacity:0,
         })
         pt2 = false
       }
@@ -152,18 +145,18 @@ function cameraMovement(){
         ease:'power1.inOut'
       })
     } else if(camera.position.z==2.5&&pt1==false&&pt2==false&&fl1==false){
-      gsap.to(camera.position,{
-        x:0,
-        y:0,
-        z:5,
-        duration:.8,
-        ease:'power1.inOut'
-      })
-      gsap.to(camera.rotation,{
-        x:0,
-        duration:.8,
-        ease:'power1.inOut'
-      })
+        gsap.to(camera.position,{
+          x:0,
+          y:0,
+          z:5,
+          duration:.8,
+          ease:'power1.inOut'
+        })
+        gsap.to(camera.rotation,{
+          x:0,
+          duration:.8,
+          ease:'power1.inOut'
+        })
     }
   })
 }
@@ -180,36 +173,36 @@ function instances(){
   })
   desk.init()
 
-  for(let i=0;i<20;i++){
-    let xpos = (Math.random()-0.5)*2
-    let ypos = (Math.random()-0.8)
-    let zpos = (Math.random()+1.2)
+  // for(let i=0;i<20;i++){
+  //   let xpos = (Math.random()-0.5)*2
+  //   let ypos = (Math.random()-0.8)
+  //   let zpos = (Math.random()+1.2)
 
-    let temp = new Model({
-      url:'./flower2.glb',
-      scene:scene,
-      meshes:meshes,
-      name:'flower'+String([i]),
-      scale: new THREE.Vector3(1.2,1.2,1.2),
-      position: new THREE.Vector3(xpos,ypos,zpos),
-      animationState:true,
-      mixers:mixers,
-    })
-    // temp.init()
-  }
+  //   let temp = new Model({
+  //     url:'./flower2.glb',
+  //     scene:scene,
+  //     meshes:meshes,
+  //     name:'flower'+String([i]),
+  //     scale: new THREE.Vector3(1.2,1.2,1.2),
+  //     position: new THREE.Vector3(xpos,ypos,zpos),
+  //     animationState:true,
+  //     mixers:mixers,
+  //   })
+  //   // temp.init()
+  // }
 
-  let testflower = new Model({
+  let flower1 = new Model({
     url:'./flower2.glb',
     scene:scene,
     meshes:meshes,
-    name:'testflower',
+    name:'flower1',
     scale: new THREE.Vector3(2,2,2),
     position: new THREE.Vector3(.15,-.2,2.2),
     // animationState:true,
     mixers:mixers
   })
-  testflower.init()
-  // console.log(mixers)
+  flower1.init()
+
 }
 
 function resize(){
@@ -222,74 +215,57 @@ function resize(){
 
 function dissipate(obj){
   let temp = obj.getObjectsByProperty('name',"Object_33")
-  // console.log(temp[0])
+  let temp2 = obj.getObjectsByProperty('name','Object_34')
+  let temp3 = obj.getObjectsByProperty('name','m3_m3_0')
 
-  gsap.from(temp[0].material,{
-    color:0xff00ff,
-    duration:1,
+  temp[0].material.transparent = true;
+  temp2[0].material.transparent = true;
+  temp3[0].material.transparent = true;
+
+  gsap.to(temp[0].material,{
+    opacity:0,
+    duration:3,
     ease:'power1'
   })
-
-  obj.traverse((obj)=>{
-    // obj.material = new THREE.MeshStandardMaterial({ color: 0xff00ff });
-    gsap.to(obj,{
-      visible:false,
-      duration:1,
-      ease:'back'
-    })
+  gsap.to(temp2[0].material,{
+    opacity:0,
+    duration:3,
+    ease:'power1'
+  })
+  gsap.to(temp3[0].material,{
+    opacity:0,
+    duration:3,
+    ease:'power1'
   })
 }
 
 function animate(){
   interactionManager.update();
-  // console.log(flowers)
-
-  // for(let i=0;i<meshes.length;i++){
-  //   let aggh = meshes.getObjectsByProperty('name','flower'+String([1]))
-  //   console.log(aggh)
-  // }
   
-
-  if(flowers.length==20 && ran==false){
-    for(let i = 0; i<flowers.length;i++){
-      // console.log(flowers[i]);
-      flowers[i].addEventListener('click',(event)=>{
-        console.log("test")
-      })
-      interactionManager.add(flowers[i])
-    }
-    ran = true;
-    // console.log(flowers)
-  }
-  
-  if(meshes.testflower && modelFlag==false){
+  if(meshes.flower1 && modelFlag==false){
     modelFlag = true
-    meshes.testflower.addEventListener('click',(event)=>{
+    meshes.flower1.addEventListener('click',(event)=>{
       fl1=true;
-      gsap.to(meshes.testflower.rotation,{
-        y:meshes.testflower.rotation.y + Math.PI * 2,
-        duration:2,
+      gsap.to(meshes.flower1.rotation,{
+        y:meshes.flower1.rotation.y + Math.PI * 2,
+        duration:3,
         ease:'power1.inOut'
-      })
-      gsap.to(meshes.testflower,{
-        visible:false,
-        duration:2,
-        ease:'power1'
       })
       let element = document.getElementById('flowerbox1')
       gsap.to(element,{
-      visibility:'visible'
+        opacity:100,
     })
     window.addEventListener('click',()=>{
-      if(element.style.visibility=='visible'){
+      if(element.style.opacity==100){
         gsap.to(element,{
-          visibility:'hidden'
+          opacity:0,
         })
         fl1=false;
+        dissipate(meshes.flower1);
       }
      })
     })
-    interactionManager.add(meshes.testflower)
+    interactionManager.add(meshes.flower1)
   }
 
   const delta = clock.getDelta()

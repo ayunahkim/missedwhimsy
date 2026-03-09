@@ -4,19 +4,21 @@
   padding:5% 20%;
   display:flex;
   z-index:2;
-  visibility:hidden;
 }
 
 #box1 {
-  background-color:rgba(149, 255, 255, 0.695);
+  opacity:0;
+  background-color:rgba(149, 255, 255, 0.67);
 }
 
 #box2 {
-  background-color:rgba(255, 149, 241, 0.695);
+  opacity:0;
+  background-color:rgba(255, 149, 241, 0.67);
 }
 
 #flowerbox1 {
-  background-color:rgba(100, 148, 237, 0.582);
+  opacity:0;
+  background-color:rgba(100, 148, 237, 0.67);
 }
 
 canvas {
