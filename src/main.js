@@ -202,7 +202,7 @@ function instances(){
   // }
 
   let flower1 = new Model({
-    url:'./flower2.glb',
+    url:'./flower.glb',
     scene:scene,
     meshes:meshes,
     name:'flower1',
@@ -214,7 +214,7 @@ function instances(){
   flower1.init()
 
   let flower2 = new Model({
-    url:'./flower2.glb',
+    url:'./flower.glb',
     scene:scene,
     meshes:meshes,
     name:'flower2',
