@@ -86,6 +86,11 @@ function points(){
   meshes.point1.addEventListener('click',()=>{
     pt1 = true;
     console.log('clickedddd')
+    gsap.to(meshes.point1.material.color,{
+      r:1,
+      duration:0.2,
+      ease:'back-in'
+    })
     msg();
   })
   interactionManager.add(meshes.point1)
@@ -278,7 +283,6 @@ function animate(){
 
   if(meshes.flower2){
     meshes.flower2.addEventListener('click',()=>{
-      console.log("please")
       fl2 = true;
       gsap.to(meshes.flower2.rotation,{
         y:meshes.flower2.rotation.y + Math.PI * 2,
