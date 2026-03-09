@@ -25,6 +25,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 
 let composer;
 let modelFlag = false;
+let modelFlag2 = false;
 
 const interactionManager = new InteractionManager(
   renderer,
@@ -40,8 +41,6 @@ const lights = {};
 const mixers = [];
 
 const clock = new THREE.Clock()
-
-let ran = false;
 
 let pt1 = false;
 let pt2 = false;
@@ -62,11 +61,11 @@ function init(){
   meshes.point1.position.y = -.1
   scene.add(meshes.point1)
 
-  // meshes.point2 = interactPoints();
-  // meshes.point2.position.z = 1.5;
-  // meshes.point2.position.x = -.5;
-  // meshes.point2.position.y = -.18
-  // scene.add(meshes.point2)
+  meshes.point2 = interactPoints();
+  meshes.point2.position.z = 1.5;
+  meshes.point2.position.x = -.5;
+  meshes.point2.position.y = -.18
+  scene.add(meshes.point2)
   
   //here we populate our meshes container
   particles.points = addParticles();
@@ -85,7 +84,7 @@ function init(){
 function points(){
   meshes.point1.addEventListener('click',()=>{
     pt1 = true;
-    console.log('clickedddd')
+    // console.log('clickedddd')
     gsap.to(meshes.point1.material.color,{
       r:1,
       duration:0.2,
@@ -95,12 +94,16 @@ function points(){
   })
   interactionManager.add(meshes.point1)
 
-  // meshes.point2.addEventListener('click',()=>{
-  //   pt2 = true;
-  //   console.log('pt 2')
-  //   msg();
-  // })
-  // interactionManager.add(meshes.point2)
+  meshes.point2.addEventListener('click',()=>{
+    pt2 = true;
+    gsap.to(meshes.point2.material.color,{
+      r:1,
+      duration:0.2,
+      ease:'back-in'
+    })
+    msg();
+  })
+  interactionManager.add(meshes.point2)
 }
 
 function msg(){
@@ -150,7 +153,8 @@ function cameraMovement(){
         duration:.8,
         ease:'power1.inOut'
       })
-    } else if(camera.position.z==2.5&&pt1==false&&pt2==false&&fl1==false&&fl2==false){
+    } // else if zoomed in
+    else if(camera.position.z==2.5&&pt1==false&&pt2==false&&fl1==false&&fl2==false){
         gsap.to(camera.position,{
           x:0,
           y:0,
@@ -229,6 +233,7 @@ function resize(){
 }
 
 function dissipate(obj){
+  console.log(obj)
   let temp = obj.getObjectsByProperty('name',"Object_33")
   let temp2 = obj.getObjectsByProperty('name','Object_34')
   let temp3 = obj.getObjectsByProperty('name','m3_m3_0')
@@ -281,9 +286,12 @@ function animate(){
     interactionManager.add(meshes.flower1)
   }
 
-  if(meshes.flower2){
-    meshes.flower2.addEventListener('click',()=>{
+  if(meshes.flower2&&modelFlag2==false){
+    modelFlag2 = true;
+    meshes.flower2.addEventListener('click',(event)=>{
       fl2 = true;
+      console.log("please")
+      
       gsap.to(meshes.flower2.rotation,{
         y:meshes.flower2.rotation.y + Math.PI * 2,
         duration:3,
