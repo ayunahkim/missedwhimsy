@@ -26,6 +26,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 let composer;
 let modelFlag = false;
 let modelFlag2 = false;
+let modelFlag3 = false;
 
 const interactionManager = new InteractionManager(
   renderer,
@@ -46,6 +47,7 @@ let pt1 = false;
 let pt2 = false;
 let fl1 = false;
 let fl2 = false;
+let fl3 = false;
 
 init();
 
@@ -86,9 +88,16 @@ function points(){
     pt1 = true;
     // console.log('clickedddd')
     gsap.to(meshes.point1.material.color,{
-      r:1,
-      duration:0.2,
-      ease:'back-in'
+      r:.3,
+      g:0,
+      b:0,
+      duration:1,
+      ease:'power1'
+    })
+    gsap.to(meshes.point1.material,{
+      opacity:0.15,
+      duration:1,
+      ease:'power1'
     })
     msg();
   })
@@ -98,8 +107,15 @@ function points(){
     pt2 = true;
     gsap.to(meshes.point2.material.color,{
       r:1,
-      duration:0.2,
-      ease:'back-in'
+      g:0,
+      b:0,
+      duration:1,
+      ease:'power1'
+    })
+    gsap.to(meshes.point2.material,{
+      opacity:0.15,
+      duration:1,
+      ease:'power1'
     })
     msg();
   })
@@ -140,7 +156,7 @@ function msg(){
 function cameraMovement(){
   window.addEventListener('click',()=>{
     // if zoomed out
-    if(camera.position.z==5&&pt1==false&&pt2==false&&fl1==false&&fl2==false){
+    if(camera.position.z==5&&!pt1&&!pt2&&!fl1&&!fl2&&!fl3){
       gsap.to(camera.position,{
         x:-.2,
         y:.4,
@@ -154,7 +170,7 @@ function cameraMovement(){
         ease:'power1.inOut'
       })
     } // else if zoomed in
-    else if(camera.position.z==2.5&&pt1==false&&pt2==false&&fl1==false&&fl2==false){
+    else if(camera.position.z==2.5&&!pt1&&!pt2&&!fl1&&!fl2&&!fl3){
         gsap.to(camera.position,{
           x:0,
           y:0,
@@ -222,6 +238,16 @@ function instances(){
     position: new THREE.Vector3(-.2,-.18,1.8)
   })
   flower2.init()
+
+  let flower3 = new Model({
+    url:'./flower.glb',
+    scene:scene,
+    meshes:meshes,
+    name:'flower3',
+    scale: new THREE.Vector3(1.6,1.6,1.6),
+    position: new THREE.Vector3(-.6,-.4,2)
+  })
+  flower3.init()
 }
 
 function resize(){
@@ -233,7 +259,6 @@ function resize(){
 }
 
 function dissipate(obj){
-  console.log(obj)
   let temp = obj.getObjectsByProperty('name',"Object_33")
   let temp2 = obj.getObjectsByProperty('name','Object_34')
   let temp3 = obj.getObjectsByProperty('name','m3_m3_0')
@@ -259,7 +284,7 @@ function dissipate(obj){
   })
 }
 
-function animate(){
+function flowerstuff(){
   if(meshes.flower1 && modelFlag==false){
     modelFlag = true
     meshes.flower1.addEventListener('click',(event)=>{
@@ -288,9 +313,15 @@ function animate(){
 
   if(meshes.flower2&&modelFlag2==false){
     modelFlag2 = true;
+
+    let altcol = meshes.flower2.getObjectsByProperty('name','Object_34')
+    altcol[0].material.color.r = .2;
+    altcol[0].material.color.g = .2;
+    altcol[0].material.color.b = 1;
+
     meshes.flower2.addEventListener('click',(event)=>{
       fl2 = true;
-      console.log("please")
+      // console.log("please")
       
       gsap.to(meshes.flower2.rotation,{
         y:meshes.flower2.rotation.y + Math.PI * 2,
@@ -313,6 +344,45 @@ function animate(){
     })
     interactionManager.add(meshes.flower2)
   }
+
+  if(meshes.flower3&&modelFlag3==false){
+    modelFlag3 = true;
+
+    let altcol = meshes.flower3.getObjectsByProperty('name','Object_34')
+    altcol[0].material.color.r = 1;
+    altcol[0].material.color.g = .2;
+    altcol[0].material.color.b = .5;
+
+    meshes.flower3.addEventListener('click',(event)=>{
+      fl3 = true;
+      // console.log("please")
+      
+      gsap.to(meshes.flower3.rotation,{
+        y:meshes.flower3.rotation.y + Math.PI * 2,
+        duration:3,
+        ease:'power1.inOut'
+      })
+      let element = document.getElementById('flowerbox3')
+      gsap.to(element,{
+        opacity:100
+      })
+      window.addEventListener('click',()=>{
+        if(element.style.opacity==100){
+          gsap.to(element,{
+            opacity:0,
+          })
+          fl3 = false;
+          dissipate(meshes.flower3);
+        }
+      })
+    })
+    interactionManager.add(meshes.flower3)
+  }
+
+}
+
+function animate(){
+  flowerstuff();
 
   const delta = clock.getDelta()
   for(const mixer of mixers){
