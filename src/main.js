@@ -7,21 +7,12 @@ import gsap from 'gsap'
 import { InteractionManager } from 'three.interactive';
 import { addParticles } from './addParticles';
 import { postProcessing } from './postProcessing';
-import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
 const scene = new THREE.Scene();
 
 // (FOV, aspect ratio, near, far)
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-
-// orbit control stuff
-// const controls = new OrbitControls(camera,renderer.domElement)
-// controls.enableDamping = true;
-// controls.minDistance=3
-// controls.maxDistance=6
-// controls.minPolarAngle=Math.PI/2
-// controls.maxPolarAngle=Math.PI/2
 
 let composer;
 let modelFlag = false;
@@ -36,7 +27,6 @@ const interactionManager = new InteractionManager(
 
 const meshes = {};
 const particles = {};
-const flowers = [];
 const lights = {};
 
 const mixers = [];
@@ -106,7 +96,7 @@ function points(){
   meshes.point2.addEventListener('click',()=>{
     pt2 = true;
     gsap.to(meshes.point2.material.color,{
-      r:1,
+      r:.3,
       g:0,
       b:0,
       duration:1,
@@ -198,24 +188,6 @@ function instances(){
     rotation: new THREE.Vector3(0,-0.87,0)
   })
   desk.init()
-
-  // for(let i=0;i<20;i++){
-  //   let xpos = (Math.random()-0.5)*2
-  //   let ypos = (Math.random()-0.8)
-  //   let zpos = (Math.random()+1.2)
-
-  //   let temp = new Model({
-  //     url:'./flower2.glb',
-  //     scene:scene,
-  //     meshes:meshes,
-  //     name:'flower'+String([i]),
-  //     scale: new THREE.Vector3(1.2,1.2,1.2),
-  //     position: new THREE.Vector3(xpos,ypos,zpos),
-  //     animationState:true,
-  //     mixers:mixers,
-  //   })
-  //   // temp.init()
-  // }
 
   let flower1 = new Model({
     url:'./flower.glb',
@@ -321,7 +293,6 @@ function flowerstuff(){
 
     meshes.flower2.addEventListener('click',(event)=>{
       fl2 = true;
-      // console.log("please")
       
       gsap.to(meshes.flower2.rotation,{
         y:meshes.flower2.rotation.y + Math.PI * 2,
@@ -355,7 +326,6 @@ function flowerstuff(){
 
     meshes.flower3.addEventListener('click',(event)=>{
       fl3 = true;
-      // console.log("please")
       
       gsap.to(meshes.flower3.rotation,{
         y:meshes.flower3.rotation.y + Math.PI * 2,
@@ -409,7 +379,6 @@ function animate(){
   }
   positionAttr.needsUpdate = true;
 
-  // controls.update();
   interactionManager.update();
   composer.render();
 }

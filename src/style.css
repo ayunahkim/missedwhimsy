@@ -1,10 +1,40 @@
+body {
+  font-family:'Source Code Pro'
+}
+
+canvas {
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:-2;
+}
+
 .box {
   position:absolute;
-  top:40vh;
-  padding:5% 20%;
-  display:flex;
+  top:30vh;
+  padding:5% 10%;
   z-index:2;
   pointer-events:none;
+  border-radius: 25px;
+  text-align:center;
+}
+
+.center {
+  display:flex;
+  justify-content:center;
+}
+
+.source-code-pro {
+  font-family: "Source Code Pro", monospace;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+
+.sour-gummy {
+  font-family: "Sour Gummy", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
 
 #box1 {
@@ -30,16 +60,4 @@
 #flowerbox3 {
   opacity:0;
   background-color:rgba(202,216,255,0.8);
-}
-
-canvas {
-  position:fixed;
-  top:0;
-  left:0;
-  z-index:-2;
-}
-
-.center {
-  display:flex;
-  justify-content:center;
 }

@@ -22,7 +22,3 @@ export function interactPoints(){
     const mesh = new THREE.Mesh(geometry,material);
     return mesh;
 }
-
-// export function addtextBox(){
-//     const geometry = new THREE.PlaneGeometry(4,1)
-// }
